@@ -1,0 +1,280 @@
+<html>
+<head>
+<script src="tokyo.js"></script>
+<script src="10000.js"></script>
+<script src="resultcalc.js"></script>
+</head>
+<body>
+<script>
+function test()
+{
+    // リザルトの初期化
+    RSLT.set_result(result.result,result.leg,result.mode);
+
+    // 1時間毎の人数を取得
+    for(var i=0 ; i<7 ; i++){
+        RSLT.set_clock(3600*i);
+        RSLT.update_result();
+        var r = RSLT.get_histgram(100);
+        console.log(r);
+//        alert(i);
+    }
+}
+var c = get_circleAry();
+console.log(c);
+/*
+ **********************************************************************
+ * サークルの位置情報を取得する
+ **********************************************************************
+ */
+function get_circleAry()
+{
+    var circleAry = null;
+
+    // 分解レベル
+	var LEVEL = 1000;
+
+	// サークル用オブジェクトを生成する
+	// lat:緯度、lng:経度、n:人数 が含まれる
+
+    // 実距離の値を取得
+	var tmp = LATLNGdata[LATLNGdata.length-2];// -2は何故?
+	var total_distance = tmp[2];
+
+	circleAry = new Array();
+	for(var i=0 ; i<LEVEL ; i++){
+		circleAry[i] = new Object();
+
+		// 距離の算出を 実距離ベースに変更
+		var one = total_distance / LEVEL; // 1レベル単位の距離
+		var dis = one * i + one / 2;
+
+		// 実距離から位置を算出
+		var ret = getLatlng(LATLNGdata, dis)
+
+		circleAry[i].n = 0;// 人数
+		circleAry[i].lat = ret[0];// 緯度
+		circleAry[i].lng = ret[1];// 経度
+		circleAry[i].x = 0;// 表示座標
+		circleAry[i].y = 0;// 表示座標
+		circleAry[i].dis = dis;// 距離 論理距離
+	}
+
+/*
+    // ヒストグラム取得
+	var h = RSLT.get_histgram( LEVEL );
+
+	// ヒストグラムデータをサークルオブジェクトに埋め込む
+	// map 情報に従って、座標計算する
+	for(var i=1 ; i<h.length-1 ; i++){
+
+		circleAry[i].n = h[i];// 値の埋め込み
+		// map から座標を算出
+		var ret = cnv(map, circleAry[i].lat, circleAry[i].lng);
+		circleAry[i].x = ret.x;
+		circleAry[i].y = ret.y;
+
+		// ★距離に応じて色変化
+		ctx.fillStyle = dis2color(circleAry[i].dis, 42195);
+
+		drawCircle(
+			ctx,
+			circleAry[i].x,
+			circleAry[i].y,
+			// ★描画半径
+			// マップの縮尺率に応じて変化させること
+			Math.sqrt(circleAry[i].n)// 人数の平方を半径とする
+			);
+    }
+    */
+    return circleAry;
+}
+/*
+ **********************************************************************
+ * バブルマップをcanvas上に表示する
+ **********************************************************************
+ */
+var circleAry = null;
+function draw_on_canvas(map, ctx)
+{
+	if(!map){
+		return;
+	}
+
+	// 分解レベル
+	var LEVEL = 1000;
+
+	// ヒストグラム算出
+	var h = RSLT.get_histgram( LEVEL );
+
+	// サークル用オブジェクトを生成する
+	// lat:緯度、lng:経度、n:人数 が含まれる
+	if(circleAry == null){
+
+		// 実距離の値を取得
+		var tmp = LATLNGdata[LATLNGdata.length-2];
+		var total_distance = tmp[2];
+
+		circleAry = new Array();
+		for(var i=0 ; i<LEVEL ; i++){
+			circleAry[i] = new Object();
+
+			// 距離を算出
+			//var one = RSLT._r_total_distance / LEVEL;
+			//var dis = one * i + one / 2;
+			// 距離の算出を 実距離ベースに変更
+			var one = total_distance / LEVEL;
+			var dis = one * i + one / 2;
+
+			// 実距離から位置を算出
+			var ret = getLatlng(LATLNGdata, dis)
+
+			circleAry[i].n = 0;// 人数
+			circleAry[i].lat = ret[0];// 緯度
+			circleAry[i].lng = ret[1];// 経度
+			circleAry[i].x = 0;// 表示座標
+			circleAry[i].y = 0;// 表示座標
+			circleAry[i].dis = dis;// 距離 論理距離
+		}
+		return;
+	}
+	// ヒストグラム取得
+	var h = RSLT.get_histgram( LEVEL );
+
+	// ヒストグラムデータをサークルオブジェクトに埋め込む
+	// map 情報に従って、座標計算する
+	for(var i=1 ; i<h.length-1 ; i++){
+
+		circleAry[i].n = h[i];// 値の埋め込み
+		// map から座標を算出
+		var ret = cnv(map, circleAry[i].lat, circleAry[i].lng);
+		circleAry[i].x = ret.x;
+		circleAry[i].y = ret.y;
+
+		// ★距離に応じて色変化
+		ctx.fillStyle = dis2color(circleAry[i].dis, 42195);
+
+		drawCircle(
+			ctx,
+			circleAry[i].x,
+			circleAry[i].y,
+			// ★描画半径
+			// マップの縮尺率に応じて変化させること
+			Math.sqrt(circleAry[i].n)// 人数の平方を半径とする
+			);
+	}
+	
+	// マーカー表示
+	put_mark("5:00:00",map, "5", ctx);
+	put_mark("4:00:00",map, "4", ctx);
+	put_mark("3:00:00",map, "3", ctx);
+	
+	// 大会時刻の表示
+	update_info();
+
+}
+
+/*
+ **********************************************************************
+ * 区間A～Bと距離から近似値を算出する
+ **********************************************************************
+ */
+ function approximateLatlng(A,B,dis)
+{
+	//         緯度   経度  距離
+	var ret = [ 0.0 , 0.0 , 0.0 ];
+
+	var total = B[2] - A[2];
+	var cur = dis - A[2];
+
+	ret[0] = A[0] + (B[0] - A[0]) * (cur / total);
+	ret[1] = A[1] + (B[1] - A[1]) * (cur / total);
+	ret[2] = dis;
+	
+	return ret;
+}
+/*
+ **********************************************************************
+	距離を元に、
+	もっとも近い緯度、経度を算出する
+
+	1.緯度、経度、距離のリストから、引数を越えない値を検出
+	2.近似値を算出する
+ **********************************************************************
+*/
+function getLatlng(lat_lng_dis, dis_meter)
+{
+	var lat = 0;
+	var lng = 1;
+	var dis = 2;
+	
+	var ret = [0.0,0.0,0.0]; // 緯度、経度、距離を返す
+
+	// スタート地点を返す
+	if( lat_lng_dis[0][2] > dis_meter ){
+		return lat_lng_dis[0];
+	}
+
+	// 終了地点を返す
+	if( lat_lng_dis[lat_lng_dis.length-1][2] < dis_meter ){
+		return lat_lng_dis[lat_lng_dis.length-1];
+	}
+
+	// ----------------------------------------
+	// Step1
+	// リストから最も近い緯度経度を検出する
+	// ----------------------------------------
+	for( var i=1 ; i<lat_lng_dis.length ; i++){
+		var d = lat_lng_dis[i];
+
+		// 距離ゼロの定義が必要★
+		if( d[dis] > dis_meter ){
+
+			ret = approximateLatlng(
+				lat_lng_dis[i-1],
+				lat_lng_dis[i],
+				dis_meter);
+			return ret;
+		}<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>BRM</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" 
+    integrity="sha512Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" 
+    crossorigin=""/>
+    
+    <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js" 
+    integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==" 
+    crossorigin=""></script>
+
+
+    <script src="tokyo.js"></script>
+    <script src="10000.js"></script>
+    <script src="resultcalc.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript" src="map_display.js"></script>
+</head>
+
+<body onload="init()">
+        <div id="map" style="position:absolute;top:0;left:0;right:0;bottom:0;"></div>
+</body>
+	}
+	// ここまで到達することはないはず
+	// 終了地点を返す
+	return [0,0,0];//lat_lng_dis[lat_lng_dis.length-1];
+}
+
+
+
+
+
+test();
+   
+</script>
+
+
+
+</body>
+</html>
