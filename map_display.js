@@ -143,9 +143,9 @@ function update_mark()
 	if(mark_flg == 0){
 		var p = [0,0];
 		var r = 5;
-		C3 = L.circle(p, { radius: r, color: "#FFFFFF", fill: true, weight: 3 }).addTo(map);
-		C4 = L.circle(p, { radius: r, color: "#FFFFFF", fill: true, weight: 3 }).addTo(map);
-		C5 = L.circle(p, { radius: r, color: "#FFFFFF", fill: true, weight: 3 }).addTo(map);
+		C3 = L.circle(p, { radius: r, color: "#FF0000", fill: true, weight: 3 }).addTo(map);
+		C4 = L.circle(p, { radius: r, color: "#FF0000", fill: true, weight: 3 }).addTo(map);
+		C5 = L.circle(p, { radius: r, color: "#FF0000", fill: true, weight: 3 }).addTo(map);
 		mark_flg = 1;
 	}
 	var p = put_mark("3:00:00");
