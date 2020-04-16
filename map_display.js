@@ -3,10 +3,8 @@ var map;
 function init()
 {
 	// ルート全体が見える範囲に設定する
-	// 表示矩形を指定する方法
-//	map = L.map('map').setView([36.575,135.984], 5);// 日本全体表示
 	map = L.map('map');
-	fit_map(LATLNGdata);// 全体表示
+	fit_map(LATLNGdata);
 
 	var tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
 		attribution: '© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
@@ -15,32 +13,8 @@ function init()
 	tileLayer.addTo(map);
 	L.control.scale({ maxWidth: 400, position: 'bottomright', imperial: false }).addTo(map);
 
-	// gpxの描画
-	//	draw();
-//	draw_gpx();
-//	draw_signal();
-//	draw_signal2();
-//	clearMap();
-	//alert("!");
-//	test_remove();
-
-	//setInterval(view_cng, 100);
-	//setInterval(draw_test1, 10);
 	draw();
-	//setInterval(draw_test2, 10);
 	setInterval(draw, 100);
-}
-/*
-	mapを指定矩形にズームする
-*/
-function fit_map_test()
-{
-	var corner1 = L.latLng(40.712, -74.227);
-	var corner2 = L.latLng(40.774, -74.125);
-	var corner1 = L.latLng(35.7109113888889,139.801841388889);
-	var corner2 = L.latLng(35.6290305555556,139.691695);
-	var bounds = L.latLngBounds(corner1, corner2);
-	map.fitBounds(bounds);
 }
 /*
  **********************************************************************
@@ -90,27 +64,6 @@ function get_max_min(a)
 	ret.max = max;
 
 	return ret;
-}
-/*
- **********************************************************************
-  描画する test
- **********************************************************************
- */
-function draw_test()
-{
-	var c = get_circleAry();
-	var r = 20;
-
-	for(var i=0 ; i<c.length ; i++){
-		var a = c[i].lat;
-		var b = c[i].lng;
-		var p = [a,b];
-		p[0] = a;
-		p[1] = b;
-		console.log(p);
-		L.circle(p, {radius: 20}).addTo(map);
-		L.circle(p, { radius: r, color: "#FF5555", fill: false, weight: 3 }).addTo(map);
-	}
 }
 /*
  **********************************************************************
