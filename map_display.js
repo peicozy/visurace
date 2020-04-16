@@ -162,8 +162,8 @@ function update_mark()
  */
 function dis2color(d,t)
 {
-	var sR=  0,sB=255,sG=  0;
-	var eR=255,eB=  0,eG=  0;
+	var sR=  0,sB=255,sG=    0; //開始位置の色
+	var eR=  0,eB=  0,eG=  255; //終了位置の色
 	
 	var r = Math.floor( sR + ((eR - sR) * d / t) );
 	var g = Math.floor( sG + ((eG - sG) * d / t) );
