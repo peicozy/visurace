@@ -171,6 +171,7 @@ function dis2color(d,t)
 	
 //	'rgba(155, 187, 89, 0.7)'
 	var c = "rgba(" + r + "," + g + "," + b + ",0.8)";
+	console.log(c);
 //	alert(c);
 	
 	return c;
