@@ -241,25 +241,6 @@ function draw()
 	update_mark();
 }
 
-
-// クリアマップのテスト
-function clearMap(){
-	var m = map;
-
-    for(i in m._layers){        
-        if(m._layers[i]._path != undefined)
-        {
-            try{
-				console.log(m._layers[i]);
-                m.removeLayer(m._layers[i]);
-            }
-            catch(e){
-                console.log("problem with " + e + m._layers[i]);
-            }
-        }
-    }
-}
-
 /*
  **********************************************************************
  * ルート上の位置情報を確定する
