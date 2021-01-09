@@ -11,9 +11,8 @@ function init()
 		maxZoom: 19
     });
 	
-	var tileLayer = L.tileLayer("https://{s}.tiles.mapbox.com/v4/mapbox.dark/{z}/{x}/{y}@2x.png?access_token=pk.eyJ1IjoicGVpY296eSIsImEiOiJjazk1bGhwZ3cwYnplM3FvNTVxZmkxaTE1In0.bncZlqoI_ci1coydbyGObQ");
-
-	
+	//var tileLayer = L.tileLayer("https://{s}.tiles.mapbox.com/v4/mapbox.dark/{z}/{x}/{y}@2x.png?access_token=pk.eyJ1IjoicGVpY296eSIsImEiOiJjazk1bGhwZ3cwYnplM3FvNTVxZmkxaTE1In0.bncZlqoI_ci1coydbyGObQ");
+	var tileLayer = L.tileLayer("https://{s}.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.png?access_token=pk.eyJ1IjoicGVpY296eSIsImEiOiJjazk1bGhwZ3cwYnplM3FvNTVxZmkxaTE1In0.bncZlqoI_ci1coydbyGObQ");
 	
 	tileLayer.addTo(map);
 	L.control.scale({ maxWidth: 400, position: 'bottomright', imperial: false }).addTo(map);
